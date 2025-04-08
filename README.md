@@ -1,1 +1,11 @@
-# zaverecny-projekt
+# Úkolový správce
+Tento program slouží jako jednoduchý správce úkolů, který umožňuje uživatelům zapisovat si úkoly, odškrtávat je jako splněné, nebo je mazat, pokud už nejsou aktuální. Úkoly se ukládají do textového souboru, kde je možné je také ručně upravovat.
+## Funkce
+- Přidání nového úkolu
+- Odstranění existujícího úkolu
+- Označení úkolu jako hotový
+- Úkládání úkolů do .txt souboru pro přehled a jednoduchou editaci mimo program
+- Výpis všech úloh a jejich stavu (hotový / nehotový)
+## Struktura úkolového souboru
+Úkoly jsou ukládány do obyčejného textového souboru. Každý řádek představuje jeden úkol a může obsahovat informaci, zda je splněný(1) a nebo nesplněný(0).
+## Spuštění programu
