@@ -7,9 +7,16 @@ def nacti_ukoly():
     try:
         with open(TODO_FILE, "r", encoding="utf-8") as f:
             for radek in f:
-                stav = radek.startswith("[x]")
-                text = radek[4:].strip()
-                ukoly.append({"text": text, "hotovo": stav})
+                radek = radek.strip()
+                if radek.startswith("[x] "):
+                    stav = True
+                    text = radek[4:]
+                elif radek.startswith("[ ] "):
+                    stav = False
+                    text = radek[4:]
+                else:
+                    continue  # Neplatný formát řádku
+                ukoly.append({"text": text.strip(), "hotovo": stav})
     except FileNotFoundError:
         pass
     return ukoly
@@ -17,21 +24,26 @@ def nacti_ukoly():
 def uloz_ukoly(ukoly):
     with open(TODO_FILE, "w", encoding="utf-8") as f:
         for ukol in ukoly:
-            stav = "[x]" if ukol["hotovo"] else "[ ]"
+            stav = "[✔️]" if ukol["hotovo"] else "[x]"
             f.write(f"{stav} {ukol['text']}\n")
 
 def zobraz_ukoly(ukoly):
     if not ukoly:
         print("🟦 Žádné úkoly.")
         return
+    print("📌 Seznam úkolů:")
     for i, ukol in enumerate(ukoly, 1):
         stav = "✔️" if ukol["hotovo"] else "❌"
         print(f"{i}. {stav} {ukol['text']}")
 
 def pridej_ukol(ukoly):
-    text = input("Zadej nový úkol: ")
-    ukoly.append({"text": text, "hotovo": False})
-    print("✅ Úkol přidán.")
+    text = input("Zadej nový úkol: ").strip()
+    if text:
+        ukoly.append({"text": text, "hotovo": False})
+        uloz_ukoly(ukoly)
+        print("✅ Úkol přidán.")
+    else:
+        print("⚠️ Úkol nemůže být prázdný.")
 
 def odstran_ukol(ukoly):
     zobraz_ukoly(ukoly)
@@ -39,6 +51,7 @@ def odstran_ukol(ukoly):
         cislo = int(input("Zadej číslo úkolu k odstranění: "))
         if 1 <= cislo <= len(ukoly):
             odstraneny = ukoly.pop(cislo - 1)
+            uloz_ukoly(ukoly)
             print(f"🗑️ Úkol \"{odstraneny['text']}\" byl odstraněn.")
         else:
             print("⚠️ Neplatné číslo.")
@@ -51,6 +64,7 @@ def oznac_hotovy(ukoly):
         cislo = int(input("Zadej číslo úkolu k označení jako hotový: "))
         if 1 <= cislo <= len(ukoly):
             ukoly[cislo - 1]["hotovo"] = True
+            uloz_ukoly(ukoly)
             print("☑️ Úkol označen jako hotový.")
         else:
             print("⚠️ Neplatné číslo.")
@@ -67,7 +81,7 @@ def menu():
         print("4 - Označit jako hotový")
         print("5 - Ukončit\n")
 
-        volba = input("Vyber akci (1-5): ")
+        volba = input("Vyber akci (1-5): ").strip()
 
         if volba == "1":
             zobraz_ukoly(ukoly)
@@ -78,7 +92,6 @@ def menu():
         elif volba == "4":
             oznac_hotovy(ukoly)
         elif volba == "5":
-            uloz_ukoly(ukoly)
             print("💾 Úkoly uloženy. Na shledanou!")
             break
         else:
