@@ -8,10 +8,10 @@ def nacti_ukoly():
         with open(TODO_FILE, "r", encoding="utf-8") as f:
             for radek in f:
                 radek = radek.strip()
-                if radek.startswith("[x] "):
+                if radek.startswith("[✔️] "):
                     stav = True
                     text = radek[4:]
-                elif radek.startswith("[ ] "):
+                elif radek.startswith("[x] "):
                     stav = False
                     text = radek[4:]
                 else:
@@ -36,7 +36,8 @@ def zobraz_ukoly(ukoly):
         stav = "✔️" if ukol["hotovo"] else "❌"
         print(f"{i}. {stav} {ukol['text']}")
 
-def pridej_ukol(ukoly):
+def pridej_ukol():
+    ukoly = nacti_ukoly()
     text = input("Zadej nový úkol: ").strip()
     if text:
         ukoly.append({"text": text, "hotovo": False})
@@ -45,7 +46,8 @@ def pridej_ukol(ukoly):
     else:
         print("⚠️ Úkol nemůže být prázdný.")
 
-def odstran_ukol(ukoly):
+def odstran_ukol():
+    ukoly = nacti_ukoly()
     zobraz_ukoly(ukoly)
     try:
         cislo = int(input("Zadej číslo úkolu k odstranění: "))
@@ -58,7 +60,8 @@ def odstran_ukol(ukoly):
     except ValueError:
         print("⚠️ Zadej platné číslo.")
 
-def oznac_hotovy(ukoly):
+def oznac_hotovy():
+    ukoly = nacti_ukoly()
     zobraz_ukoly(ukoly)
     try:
         cislo = int(input("Zadej číslo úkolu k označení jako hotový: "))
@@ -72,7 +75,6 @@ def oznac_hotovy(ukoly):
         print("⚠️ Zadej platné číslo.")
 
 def menu():
-    ukoly = nacti_ukoly()
     while True:
         print("\n📋 MENU")
         print("1 - Zobrazit úkoly")
@@ -84,13 +86,14 @@ def menu():
         volba = input("Vyber akci (1-5): ").strip()
 
         if volba == "1":
+            ukoly = nacti_ukoly()
             zobraz_ukoly(ukoly)
         elif volba == "2":
-            pridej_ukol(ukoly)
+            pridej_ukol()
         elif volba == "3":
-            odstran_ukol(ukoly)
+            odstran_ukol()
         elif volba == "4":
-            oznac_hotovy(ukoly)
+            oznac_hotovy()
         elif volba == "5":
             print("💾 Úkoly uloženy. Na shledanou!")
             break
