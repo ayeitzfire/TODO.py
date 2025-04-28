@@ -1,0 +1,59 @@
+# test_todo.py
+
+import unittest
+from unittest.mock import mock_open, patch
+import todo
+
+class TestTodo(unittest.TestCase):
+    def setUp(self):
+        self.ukoly = [
+            {"text": "První úkol", "hotovo": False},
+            {"text": "Druhý úkol", "hotovo": True}
+        ]
+
+    @patch("builtins.open", new_callable=mock_open, read_data="[x] První úkol\n[✔️] Druhý úkol\n")
+    def test_nacti_ukoly(self, mock_file):
+        ukoly = todo.nacti_ukoly()
+        expected = self.ukoly
+        self.assertEqual(ukoly, expected)
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_uloz_ukoly(self, mock_file):
+        todo.uloz_ukoly(self.ukoly)
+        mock_file.assert_called_once_with(todo.TODO_FILE, "w", encoding="utf-8")
+        handle = mock_file()
+        handle.write.assert_any_call("[x] První úkol\n")
+        handle.write.assert_any_call("[✔️] Druhý úkol\n")
+
+    @patch("builtins.input", return_value="Nový úkol")
+    @patch("todo.nacti_ukoly", return_value=[])
+    @patch("todo.uloz_ukoly")
+    def test_pridej_ukol(self, mock_uloz, mock_nacti, mock_input):
+        todo.pridej_ukol()
+        mock_uloz.assert_called_once()
+        ulozene_ukoly = mock_uloz.call_args[0][0]
+        self.assertEqual(len(ulozene_ukoly), 1)
+        self.assertEqual(ulozene_ukoly[0]["text"], "Nový úkol")
+        self.assertFalse(ulozene_ukoly[0]["hotovo"])
+
+    @patch("builtins.input", side_effect=["1"])
+    @patch("todo.nacti_ukoly")
+    @patch("todo.uloz_ukoly")
+    def test_odstran_ukol(self, mock_uloz, mock_nacti, mock_input):
+        mock_nacti.return_value = self.ukoly.copy()
+        todo.odstran_ukol()
+        ulozene_ukoly = mock_uloz.call_args[0][0]
+        self.assertEqual(len(ulozene_ukoly), 1)
+        self.assertEqual(ulozene_ukoly[0]["text"], "Druhý úkol")
+
+    @patch("builtins.input", side_effect=["1"])
+    @patch("todo.nacti_ukoly")
+    @patch("todo.uloz_ukoly")
+    def test_oznac_hotovy(self, mock_uloz, mock_nacti, mock_input):
+        mock_nacti.return_value = self.ukoly.copy()
+        todo.oznac_hotovy()
+        ulozene_ukoly = mock_uloz.call_args[0][0]
+        self.assertTrue(ulozene_ukoly[0]["hotovo"])
+
+if __name__ == "__main__":
+    unittest.main()
