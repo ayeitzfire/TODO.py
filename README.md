@@ -15,3 +15,8 @@ Tento program slouží jako jednoduchý správce úkolů, který umožňuje uži
 
 ```bash
 python todo.py
+## Spuštění testu
+1. Spusť test programu pomocí:
+
+```bash
+python test_todo.py
