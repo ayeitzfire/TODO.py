@@ -7,7 +7,7 @@ Tento program slouží jako jednoduchý správce úkolů, který umožňuje uži
 - Úkládání úkolů do .txt souboru pro přehled a jednoduchou editaci mimo program
 - Výpis všech úloh a jejich stavu (hotový / nehotový)
 ## Struktura úkolového souboru
-Úkoly jsou ukládány do obyčejného textového souboru. Každý řádek představuje jeden úkol a může obsahovat informaci, zda je splněný(1) a nebo nesplněný(0).
+Úkoly jsou ukládány do obyčejného textového souboru. Každý řádek představuje jeden úkol a může obsahovat informaci, zda je splněný a nebo nesplněný.
 ## Spuštění programu
 1. Ujisti se, že máš nainstalovaný Python 3.
 2. Stáhni si soubor s programem.
